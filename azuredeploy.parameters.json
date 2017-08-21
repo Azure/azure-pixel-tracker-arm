@@ -3,13 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "namespaceName": {
-            "value": "GEN-UNIQUE"
+            "value": "streamIngestQueue"
         },
         "eventHubName": {
-            "value": "GEN-UNIQUE"
+            "value": "streamIngestEH"
         },
         "consumerGroupName": {
-            "value": "GEN-UNIQUE"
+            "value": "streamIngestQueueCG1"
         } 
     }
 }
