@@ -1,1 +1,233 @@
-{"options":[{"enabled":false,"definition":{"id":""},"inputs":{"branchFilters":"[\"+refs/heads/*\"]","additionalFields":"{}"}},{"enabled":false,"definition":{"id":"5bc3cfb7-6b54-4a4b-b5d2-a3905949f8a6"},"inputs":{}},{"enabled":false,"definition":{"id":"7c555368-ca64-4199-add6-9ebaf0b0137d"},"inputs":{"multipliers":"[]","parallel":"false","continueOnError":"true","additionalFields":"{}"}},{"enabled":false,"definition":{"id":"a9db38f9-9fdc-478c-b0f9-464221e58316"},"inputs":{"workItemType":"626212","assignToRequestor":"true","additionalFields":"{}"}},{"enabled":false,"definition":{"id":"57578776-4c22-4526-aeb0-86b6da17ee9c"},"inputs":{}}],"triggers":[{"branchFilters":["+refs/heads/master"],"pathFilters":[],"batchChanges":true,"maxConcurrentBuildsPerBranch":1,"pollingInterval":0,"triggerType":2}],"variables":{"system.debug":{"value":"false","allowOverride":true}},"retentionRules":[{"branches":["+refs/heads/*"],"artifacts":[],"artifactTypesToDelete":["FilePath","SymbolStore"],"daysToKeep":10,"minimumToKeep":1,"deleteBuildRecord":true,"deleteTestResults":true}],"metrics":[{"name":"CurrentBuildsInQueue","scope":"refs/heads/master","intValue":0},{"name":"CurrentBuildsInProgress","scope":"refs/heads/master","intValue":0},{"name":"CanceledBuilds","scope":"refs/heads/master","intValue":0,"date":"2017-08-21T00:00:00.000Z"},{"name":"FailedBuilds","scope":"refs/heads/master","intValue":1,"date":"2017-08-21T00:00:00.000Z"},{"name":"PartiallySuccessfulBuilds","scope":"refs/heads/master","intValue":0,"date":"2017-08-21T00:00:00.000Z"},{"name":"SuccessfulBuilds","scope":"refs/heads/master","intValue":1,"date":"2017-08-21T00:00:00.000Z"},{"name":"TotalBuilds","scope":"refs/heads/master","intValue":2,"date":"2017-08-21T00:00:00.000Z"}],"_links":{"self":{"href":"https://msdata.visualstudio.com/22858b74-a00a-4a4f-818c-f12856df0628/_apis/build/Definitions/1623"},"web":{"href":"https://msdata.visualstudio.com/_permalink/_build/index?collectionId=8b119ea1-2e2a-4839-8db7-8c9e8d50f6fa&projectId=22858b74-a00a-4a4f-818c-f12856df0628&definitionId=1623"},"editor":{"href":"https://msdata.visualstudio.com/_permalink/_build/definitionEditor?collectionId=8b119ea1-2e2a-4839-8db7-8c9e8d50f6fa&projectId=22858b74-a00a-4a4f-818c-f12856df0628&definitionId=1623"}},"jobAuthorizationScope":1,"jobTimeoutInMinutes":60,"jobCancelTimeoutInMinutes":5,"process":{"phases":[{"steps":[{"environment":{},"enabled":true,"continueOnError":false,"alwaysRun":false,"displayName":"Azure Deployment:Create Or Update Resource Group action on pixelTracker","timeoutInMinutes":0,"condition":"succeeded()","refName":"AzureResourceGroupDeployment1","task":{"id":"94a74903-f93f-4075-884f-dc11f34058b4","versionSpec":"2.*","definitionType":"task"},"inputs":{"ConnectedServiceName":"$(Parameters.ConnectedServiceName)","action":"Create Or Update Resource Group","resourceGroupName":"pixelTracker","location":"East US 2","templateLocation":"Linked artifact","csmFileLink":"","csmParametersFileLink":"","csmFile":"azuredeploy.json","csmParametersFile":"azuredeploy.parameters.json","overrideParameters":"","deploymentMode":"Validation","enableDeploymentPrerequisites":"None","deploymentGroupEndpoint":"","project":"","deploymentGroupName":"","copyAzureVMTags":"true","outputVariable":""}}],"name":null,"jobAuthorizationScope":0}],"type":1},"repository":{"properties":{"cleanOptions":"0","labelSources":"0","labelSourcesFormat":"$(build.buildNumber)","reportBuildStatus":"true","gitLfsSupport":"false","skipSyncSource":"false","checkoutNestedSubmodules":"false","fetchDepth":"0"},"id":"3d57f5bc-e5f7-459e-9b2c-98f33c978c12","type":"TfsGit","name":"blads_Pixel-Tracker-IaC","url":"https://msdata.visualstudio.com/AlgorithmsAndDataScience/_git/blads_Pixel-Tracker-IaC","defaultBranch":"refs/heads/master","clean":"false","checkoutSubmodules":false},"processParameters":{"inputs":[{"options":{},"properties":{},"name":"ConnectedServiceName","label":"Azure subscription","defaultValue":"da3bbcbd-5094-44ba-b513-be76b0f77b0b","required":true,"type":"connectedService:AzureRM","helpMarkDown":"Select the Azure Resource Manager subscription for the deployment.","visibleRule":"","groupName":""}],"dataSourceBindings":[{"dataSourceName":"AzureResourceGroups","parameters":{},"endpointId":"$(ConnectedServiceName)","target":"resourceGroupName"},{"dataSourceName":"AzureResourceGroups","parameters":{},"endpointId":"$(ConnectedServiceName)","target":"resourceGroupName"}]},"quality":1,"authoredBy":{"id":"0ef5b3af-3e01-48fd-9bd3-2f701c8fdebe","displayName":"Daniel Ciborowski","uniqueName":"dciborow@microsoft.com","url":"https://app.vssps.visualstudio.com/A9f26cb8d-0313-4c58-bf44-b7bab458672c/_apis/Identities/0ef5b3af-3e01-48fd-9bd3-2f701c8fdebe","imageUrl":"https://msdata.visualstudio.com/_api/_common/identityImage?id=0ef5b3af-3e01-48fd-9bd3-2f701c8fdebe"},"queue":{"id":332,"name":"General VSO Build Agents","pool":{"id":40,"name":"General VSO Build Agents"}},"id":1623,"name":"BLADS Streaming Ingest IaC","url":"https://msdata.visualstudio.com/22858b74-a00a-4a4f-818c-f12856df0628/_apis/build/Definitions/1623","uri":"vstfs:///Build/Definition/1623","path":"\\","type":2,"revision":2,"createdDate":"2017-08-21T17:39:21.203Z","project":{"id":"22858b74-a00a-4a4f-818c-f12856df0628","name":"AlgorithmsAndDataScience","url":"https://msdata.visualstudio.com/_apis/projects/22858b74-a00a-4a4f-818c-f12856df0628","state":"wellFormed","revision":671,"visibility":0}}
+{
+    "options": [{
+        "enabled": false,
+        "definition": {
+            "id": ""
+        },
+        "inputs": {
+            "branchFilters": "[\"+refs/heads/*\"]",
+            "additionalFields": "{}"
+        }
+    }, {
+        "enabled": false,
+        "definition": {
+            "id": "5bc3cfb7-6b54-4a4b-b5d2-a3905949f8a6"
+        },
+        "inputs": {}
+    }, {
+        "enabled": false,
+        "definition": {
+            "id": "7c555368-ca64-4199-add6-9ebaf0b0137d"
+        },
+        "inputs": {
+            "multipliers": "[]",
+            "parallel": "false",
+            "continueOnError": "true",
+            "additionalFields": "{}"
+        }
+    }, {
+        "enabled": false,
+        "definition": {
+            "id": "a9db38f9-9fdc-478c-b0f9-464221e58316"
+        },
+        "inputs": {
+            "workItemType": "626212",
+            "assignToRequestor": "true",
+            "additionalFields": "{}"
+        }
+    }, {
+        "enabled": false,
+        "definition": {
+            "id": "57578776-4c22-4526-aeb0-86b6da17ee9c"
+        },
+        "inputs": {}
+    }],
+    "triggers": [{
+        "branchFilters": ["+refs/heads/master"],
+        "pathFilters": [],
+        "batchChanges": true,
+        "maxConcurrentBuildsPerBranch": 1,
+        "pollingInterval": 0,
+        "triggerType": 2
+    }],
+    "variables": {
+        "system.debug": {
+            "value": "false",
+            "allowOverride": true
+        }
+    },
+    "retentionRules": [{
+        "branches": ["+refs/heads/*"],
+        "artifacts": [],
+        "artifactTypesToDelete": ["FilePath", "SymbolStore"],
+        "daysToKeep": 10,
+        "minimumToKeep": 1,
+        "deleteBuildRecord": true,
+        "deleteTestResults": true
+    }],
+    "metrics": [{
+        "name": "CurrentBuildsInQueue",
+        "scope": "refs/heads/master",
+        "intValue": 0
+    }, {
+        "name": "CurrentBuildsInProgress",
+        "scope": "refs/heads/master",
+        "intValue": 0
+    }, {
+        "name": "CanceledBuilds",
+        "scope": "refs/heads/master",
+        "intValue": 0,
+        "date": "2017-08-21T00:00:00.000Z"
+    }, {
+        "name": "FailedBuilds",
+        "scope": "refs/heads/master",
+        "intValue": 1,
+        "date": "2017-08-21T00:00:00.000Z"
+    }, {
+        "name": "PartiallySuccessfulBuilds",
+        "scope": "refs/heads/master",
+        "intValue": 0,
+        "date": "2017-08-21T00:00:00.000Z"
+    }, {
+        "name": "SuccessfulBuilds",
+        "scope": "refs/heads/master",
+        "intValue": 1,
+        "date": "2017-08-21T00:00:00.000Z"
+    }, {
+        "name": "TotalBuilds",
+        "scope": "refs/heads/master",
+        "intValue": 2,
+        "date": "2017-08-21T00:00:00.000Z"
+    }],
+    "_links": {
+        "self": {
+            "href": "https://msdata.visualstudio.com/22858b74-a00a-4a4f-818c-f12856df0628/_apis/build/Definitions/1623"
+        },
+        "web": {
+            "href": "https://msdata.visualstudio.com/_permalink/_build/index?collectionId=8b119ea1-2e2a-4839-8db7-8c9e8d50f6fa&projectId=22858b74-a00a-4a4f-818c-f12856df0628&definitionId=1623"
+        },
+        "editor": {
+            "href": "https://msdata.visualstudio.com/_permalink/_build/definitionEditor?collectionId=8b119ea1-2e2a-4839-8db7-8c9e8d50f6fa&projectId=22858b74-a00a-4a4f-818c-f12856df0628&definitionId=1623"
+        }
+    },
+    "jobAuthorizationScope": 1,
+    "jobTimeoutInMinutes": 60,
+    "jobCancelTimeoutInMinutes": 5,
+    "process": {
+        "phases": [{
+            "steps": [{
+                "environment": {},
+                "enabled": true,
+                "continueOnError": false,
+                "alwaysRun": false,
+                "displayName": "Azure Deployment:Create Or Update Resource Group action on pixelTracker",
+                "timeoutInMinutes": 0,
+                "condition": "succeeded()",
+                "refName": "AzureResourceGroupDeployment1",
+                "task": {
+                    "id": "94a74903-f93f-4075-884f-dc11f34058b4",
+                    "versionSpec": "2.*",
+                    "definitionType": "task"
+                },
+                "inputs": {
+                    "ConnectedServiceName": "$(Parameters.ConnectedServiceName)",
+                    "action": "Create Or Update Resource Group",
+                    "resourceGroupName": "pixelTracker",
+                    "location": "East US 2",
+                    "templateLocation": "Linked artifact",
+                    "csmFileLink": "",
+                    "csmParametersFileLink": "",
+                    "csmFile": "azuredeploy.json",
+                    "csmParametersFile": "azuredeploy.parameters.json",
+                    "overrideParameters": "",
+                    "deploymentMode": "Validation",
+                    "enableDeploymentPrerequisites": "None",
+                    "deploymentGroupEndpoint": "",
+                    "project": "",
+                    "deploymentGroupName": "",
+                    "copyAzureVMTags": "true",
+                    "outputVariable": ""
+                }
+            }],
+            "name": null,
+            "jobAuthorizationScope": 0
+        }],
+        "type": 1
+    },
+    "repository": {
+        "properties": {
+            "cleanOptions": "0",
+            "labelSources": "0",
+            "labelSourcesFormat": "$(build.buildNumber)",
+            "reportBuildStatus": "true",
+            "gitLfsSupport": "false",
+            "skipSyncSource": "false",
+            "checkoutNestedSubmodules": "false",
+            "fetchDepth": "0"
+        },
+        "id": "3d57f5bc-e5f7-459e-9b2c-98f33c978c12",
+        "type": "TfsGit",
+        "name": "blads_Pixel-Tracker-IaC",
+        "url": "https://msdata.visualstudio.com/AlgorithmsAndDataScience/_git/blads_Pixel-Tracker-IaC",
+        "defaultBranch": "refs/heads/master",
+        "clean": "false",
+        "checkoutSubmodules": false
+    },
+    "processParameters": {
+        "inputs": [{
+            "options": {},
+            "properties": {},
+            "name": "ConnectedServiceName",
+            "label": "Azure subscription",
+            "defaultValue": "da3bbcbd-5094-44ba-b513-be76b0f77b0b",
+            "required": true,
+            "type": "connectedService:AzureRM",
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
+            "visibleRule": "",
+            "groupName": ""
+        }],
+        "dataSourceBindings": [{
+            "dataSourceName": "AzureResourceGroups",
+            "parameters": {},
+            "endpointId": "$(ConnectedServiceName)",
+            "target": "resourceGroupName"
+        }, {
+            "dataSourceName": "AzureResourceGroups",
+            "parameters": {},
+            "endpointId": "$(ConnectedServiceName)",
+            "target": "resourceGroupName"
+        }]
+    },
+    "quality": 1,
+    "authoredBy": {
+        "id": "0ef5b3af-3e01-48fd-9bd3-2f701c8fdebe",
+        "displayName": "Daniel Ciborowski",
+        "uniqueName": "dciborow@microsoft.com",
+        "url": "https://app.vssps.visualstudio.com/A9f26cb8d-0313-4c58-bf44-b7bab458672c/_apis/Identities/0ef5b3af-3e01-48fd-9bd3-2f701c8fdebe",
+        "imageUrl": "https://msdata.visualstudio.com/_api/_common/identityImage?id=0ef5b3af-3e01-48fd-9bd3-2f701c8fdebe"
+    },
+    "queue": {
+        "id": 332,
+        "name": "General VSO Build Agents",
+        "pool": {
+            "id": 40,
+            "name": "General VSO Build Agents"
+        }
+    },
+    "id": 1623,
+    "name": "BLADS Streaming Ingest IaC",
+    "url": "https://msdata.visualstudio.com/22858b74-a00a-4a4f-818c-f12856df0628/_apis/build/Definitions/1623",
+    "uri": "vstfs:///Build/Definition/1623",
+    "path": "\\",
+    "type": 2,
+    "revision": 2,
+    "createdDate": "2017-08-21T17:39:21.203Z",
+    "project": {
+        "id": "22858b74-a00a-4a4f-818c-f12856df0628",
+        "name": "AlgorithmsAndDataScience",
+        "url": "https://msdata.visualstudio.com/_apis/projects/22858b74-a00a-4a4f-818c-f12856df0628",
+        "state": "wellFormed",
+        "revision": 671,
+        "visibility": 0
+    }
+}
