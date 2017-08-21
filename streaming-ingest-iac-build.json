@@ -2,7 +2,7 @@
     "options": [{
         "enabled": false,
         "definition": {
-            "id": ""
+            "id": "5d58cc01-7c75-450c-be18-a388ddb129ec"
         },
         "inputs": {
             "branchFilters": "[\"+refs/heads/*\"]",
@@ -42,14 +42,6 @@
         },
         "inputs": {}
     }],
-    "triggers": [{
-        "branchFilters": ["+refs/heads/master"],
-        "pathFilters": [],
-        "batchChanges": true,
-        "maxConcurrentBuildsPerBranch": 1,
-        "pollingInterval": 0,
-        "triggerType": 2
-    }],
     "variables": {
         "system.debug": {
             "value": "false",
@@ -81,7 +73,7 @@
     }, {
         "name": "FailedBuilds",
         "scope": "refs/heads/master",
-        "intValue": 1,
+        "intValue": 4,
         "date": "2017-08-21T00:00:00.000Z"
     }, {
         "name": "PartiallySuccessfulBuilds",
@@ -91,12 +83,12 @@
     }, {
         "name": "SuccessfulBuilds",
         "scope": "refs/heads/master",
-        "intValue": 1,
+        "intValue": 7,
         "date": "2017-08-21T00:00:00.000Z"
     }, {
         "name": "TotalBuilds",
         "scope": "refs/heads/master",
-        "intValue": 2,
+        "intValue": 11,
         "date": "2017-08-21T00:00:00.000Z"
     }],
     "_links": {
@@ -148,6 +140,28 @@
                     "copyAzureVMTags": "true",
                     "outputVariable": ""
                 }
+            }, {
+                "environment": {},
+                "enabled": true,
+                "continueOnError": false,
+                "alwaysRun": false,
+                "displayName": "Copy Files to: $(build.artifactstagingdirectory)",
+                "timeoutInMinutes": 0,
+                "condition": "succeeded()",
+                "refName": "CopyFiles2",
+                "task": {
+                    "id": "5bfb729a-a7c8-4a78-a7c3-8d717bb7c13c",
+                    "versionSpec": "2.*",
+                    "definitionType": "task"
+                },
+                "inputs": {
+                    "SourceFolder": "",
+                    "Contents": "**",
+                    "TargetFolder": "$(build.artifactstagingdirectory)",
+                    "CleanTargetFolder": "false",
+                    "OverWrite": "false",
+                    "flattenFolders": "false"
+                }
             }],
             "name": null,
             "jobAuthorizationScope": 0
@@ -179,7 +193,7 @@
             "properties": {},
             "name": "ConnectedServiceName",
             "label": "Azure subscription",
-            "defaultValue": "",
+            "defaultValue": "da3bbcbd-5094-44ba-b513-be76b0f77b0b",
             "required": true,
             "type": "connectedService:AzureRM",
             "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
@@ -220,8 +234,8 @@
     "uri": "vstfs:///Build/Definition/1623",
     "path": "\\",
     "type": 2,
-    "revision": 2,
-    "createdDate": "2017-08-21T17:39:21.203Z",
+    "revision": 9,
+    "createdDate": "2017-08-21T18:19:44.787Z",
     "project": {
         "id": "22858b74-a00a-4a4f-818c-f12856df0628",
         "name": "AlgorithmsAndDataScience",
