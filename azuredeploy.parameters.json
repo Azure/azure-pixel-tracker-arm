@@ -10,6 +10,12 @@
         },
         "consumerGroupName": {
             "value": "streamIngestQueueCG1"
-        } 
+        },
+        "hostingPlanName": {
+            "value": "streamIngestPlan"
+        },
+        "webSiteName": {
+            "value": "streamIngestWebApp"
+        }
     }
 }
