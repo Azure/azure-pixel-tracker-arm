@@ -1,7 +1,14 @@
 {  
    "$schema":"http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
    "contentVersion":"1.0.0.0",
-   "parameters":{  
+   "parameters":{
+      "environment": {
+         "type":"string",
+         "defaultValue": "int",
+         "metadata": {
+             "description": "Deployment Enviroment for release"
+         }
+      },  
       "namespaceName":{  
          "type":"string",
          "metadata":{  
@@ -65,14 +72,18 @@
         }
    },
    "variables":{
+      "ehNamespaceName": "[concat(parameters('environment'), parameters('namespaceName'))]",
+      "ehName": "concat(parameters('environment'),parameters('eventHubName'))",
+      "hpName": "concat(parameters('environment'),parameters('hostingPlanName'))",
+      "wsName": "concat(parameters('environment'),parameters('webSiteName'))",
       "defaultSASKeyName":"RootManageSharedAccessKey",
-      "authRuleResourceId":"[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('namespaceName'), variables('defaultSASKeyName'))]",
-	  "ehVersion":"2017-04-01"
+      "authRuleResourceId":"[resourceId('Microsoft.EventHub/namespaces/authorizationRules', variables('ehNamespaceName'), variables('defaultSASKeyName'))]",
+	  "ehVersion":"2017-04-01"      
    },
    "resources":[  
       {  
          "apiVersion":"2017-04-01",
-         "name":"[parameters('namespaceName')]",
+         "name":"[variables('ehNamespaceName')]",
          "type":"Microsoft.EventHub/Namespaces",
          "location":"[resourceGroup().location]",
          "sku":{  
@@ -85,10 +96,10 @@
          "resources":[  
             {  
                "apiVersion":"2017-04-01",
-               "name":"[parameters('eventHubName')]",
+               "name":"[variables('ehName')]",
                "type":"EventHubs",
                "dependsOn":[  
-                  "[concat('Microsoft.EventHub/namespaces/', parameters('namespaceName'))]"
+                  "[concat('Microsoft.EventHub/namespaces/', variables('ehNamespaceName'))]"
                ],
                "properties":{
 				  "messageRetentionInDays": "7",
@@ -100,7 +111,7 @@
                      "name":"[parameters('consumerGroupName')]",
                      "type":"ConsumerGroups",
                      "dependsOn":[  
-                        "[parameters('eventHubName')]"
+                        "[variables('ehName')]"
                      ],
                      "properties":{
 					 "userMetadata": "This is a Test Metadata"
@@ -112,7 +123,7 @@
       },
       {
             "apiVersion": "2015-08-01",
-            "name": "[parameters('hostingPlanName')]",
+            "name": "[variables('hpName')]",
             "type": "Microsoft.Web/serverfarms",
             "location": "[resourceGroup().location]",
             "tags": {
@@ -123,24 +134,24 @@
                 "capacity": "[parameters('skuCapacity')]"
             },
             "properties": {
-                "name": "[parameters('hostingPlanName')]"
+                "name": "[variables('hpName')]"
             }
         },
         {
             "apiVersion": "2015-08-01",
-            "name": "[parameters('webSiteName')]",
+            "name": "[variables('wsName')]",
             "type": "Microsoft.Web/sites",
             "location": "[resourceGroup().location]",
             "tags": {
-                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/',variables('hpName'))]": "Resource",
                 "displayName": "Website"
             },
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+                "[concat('Microsoft.Web/serverfarms/', variables('hpName'))]"
             ],
             "properties": {
-                "name": "[parameters('webSiteName')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+                "name": "[variables('wsName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('hpName'))]",
     			"siteConfig": {
                     "appSettings": [{
                         "Name": "EventHubNamespaceConnectionString",
@@ -154,12 +165,24 @@
                     "name": "web",
                     "type": "config",
                     "dependsOn": [
-                        "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]"
+                        "[concat('Microsoft.Web/sites/', variables('wsName'))]"
                     ],
                     "properties": {
                         "javaVersion": "1.8",
                         "javaContainer": "TOMCAT",
                         "javaContainerVersion": "8.0"
+                    }
+                },
+                {
+                    "apiVersion": "2014-11-01",
+                    "name": "connectionstrings",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites',variables('wsName'))]",
+                        "[variables('ehName')]"
+                    ],
+                    "properties": {
+                        "ConnString1": { "value":"[listkeys(variables('authRuleResourceId'), variables('ehVersion')).primaryConnectionString]", "type": "custom" }
                     }
                 }
             ]
