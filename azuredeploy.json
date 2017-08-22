@@ -73,9 +73,9 @@
    },
    "variables":{
       "ehNamespaceName": "[concat(parameters('environment'), parameters('namespaceName'))]",
-      "ehName": "concat(parameters('environment'),parameters('eventHubName'))",
-      "hpName": "concat(parameters('environment'),parameters('hostingPlanName'))",
-      "wsName": "concat(parameters('environment'),parameters('webSiteName'))",
+      "ehName": "[concat(parameters('environment'),parameters('eventHubName'))]",
+      "hpName": "[concat(parameters('environment'),parameters('hostingPlanName'))]",
+      "wsName": "[concat(parameters('environment'),parameters('webSiteName'))]",
       "defaultSASKeyName":"RootManageSharedAccessKey",
       "authRuleResourceId":"[resourceId('Microsoft.EventHub/namespaces/authorizationRules', variables('ehNamespaceName'), variables('defaultSASKeyName'))]",
 	  "ehVersion":"2017-04-01"      
