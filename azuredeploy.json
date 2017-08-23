@@ -11,6 +11,7 @@
       },  
       "namespaceName":{  
          "type":"string",
+         "defaultValue": "pixelTrackerNamespace",
          "metadata":{  
             "description":"Name of the EventHub namespace"
          }
