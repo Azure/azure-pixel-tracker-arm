@@ -1,3 +1,14 @@
+param(
+    [string]
+    $appdirectory,
+
+    [string]
+    $resourceGroup,
+
+    [string]
+    $webappname
+)
+
 # Get publishing profile for the web app
 $xml = (Get-AzureRmWebAppPublishingProfile -Name $webappname `
 -ResourceGroupName $resourceGroup `
