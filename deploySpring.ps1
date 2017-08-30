@@ -28,5 +28,5 @@ $webclient = New-Object -TypeName System.Net.WebClient
 $webclient.Credentials = New-Object System.Net.NetworkCredential($username,$password)
 $uri = New-Object System.Uri("$url/$file")
 "Uploading to " + $uri.AbsoluteUri
-$webclient.UploadFile($uri, $file)
+$webclient.UploadFile($uri,null, $file)
 $webclient.Dispose()
