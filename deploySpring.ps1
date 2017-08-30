@@ -10,7 +10,7 @@ param(
 )
 
 # Get publishing profile for the web app
-$xml = (Get-AzureRmWebAppPublishingProfile -Name $webappname `
+$xml = [Xml] (Get-AzureRmWebAppPublishingProfile -Name $webappname `
 -ResourceGroupName $resourceGroup `
 -OutputFile null)
 
