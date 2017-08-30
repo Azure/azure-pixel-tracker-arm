@@ -23,7 +23,7 @@ $url = $xml.SelectNodes("//publishProfile[@publishMethod=`"FTP`"]/@publishUrl").
 Set-Location $appdirectory
 $webclient = New-Object -TypeName System.Net.WebClient
 $webclient.Credentials = New-Object System.Net.NetworkCredential($username,$password)
-$files = Get-ChildItem -Path $appdirectory -Recurse | Where-Object{!($_.PSIsContainer)}
+$files = Get-ChildItem -Path $appdirectory | Where-Object{!($_.PSIsContainer)}
 foreach ($file in $files)
 {
     $relativepath = (Resolve-Path -Path $file.FullName -Relative).Replace(".\", "").Replace('\', '/')
