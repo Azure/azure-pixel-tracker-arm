@@ -23,12 +23,9 @@ $url = $xml.SelectNodes("//publishProfile[@publishMethod=`"FTP`"]/@publishUrl").
 Set-Location $appdirectory
 $webclient = New-Object -TypeName System.Net.WebClient
 $webclient.Credentials = New-Object System.Net.NetworkCredential($username,$password)
-$files = Get-ChildItem -Path $appdirectory -Recurse | Where-Object{!($_.PSIsContainer)}
-foreach ($file in $files)
-{
-    $relativepath = (Resolve-Path -Path $file.FullName -Relative).Replace(".\", "").Replace('\', '/')
-    $uri = New-Object System.Uri("$url/$relativepath")
-    "Uploading to " + $uri.AbsoluteUri
-    $webclient.UploadFile($uri, $file.FullName)
-} 
+$file = Get-ChildItem -Path $appdirectory
+$relativepath = (Resolve-Path -Path $file.FullName -Relative).Replace(".\", "").Replace('\', '/')
+$uri = New-Object System.Uri("$url/$relativepath")
+"Uploading to " + $uri.AbsoluteUri
+$webclient.UploadFile($uri, $file.FullName)
 $webclient.Dispose()
