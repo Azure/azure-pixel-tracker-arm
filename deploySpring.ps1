@@ -2,8 +2,8 @@ param(
     [string]
     $appdirectory,
 
-    [string],
-    $file
+    [string]
+    $file,
 
     [string]
     $resourceGroup,
