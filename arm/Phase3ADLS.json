@@ -1,0 +1,36 @@
+     {
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+	},
+	"variables": {
+		"namePrefix": "[resourceGroup().name]",
+		"uniqueNamePrefix": "[concat(variables('namePrefix'), uniqueString(subscription().subscriptionId))]",
+		"location": "[resourceGroup().location]",
+
+		"adlStoreName" : "[concat(substring(variables('uniqueNamePrefix'),0,10), 'adls')]",
+		
+		"defaultApiVersion": "2015-06-15",
+		"adlsApiVersion": "2015-10-01-preview"
+	},
+	"resources": [{
+		"name": "[variables('adlStoreName')]",
+		"type": "Microsoft.DataLakeStore/accounts",
+        "location": "East US 2",
+		"apiVersion": "[variables('adlsApiVersion')]",
+		"dependsOn": [],
+		"tags": {
+		}
+
+	}],
+	"outputs": {
+		"adlStoreAccount": {
+			"type": "string",
+			"value": "[variables('adlStoreName')]"
+		},
+   		"dataLakeStoreDeepLinkUrl": {
+   			"type": "string",
+   			"value": "[concat('https://ms.portal.azure.com/#resource/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.DataLakeStore/accounts/', variables('adlStoreName'), '/overview')]"
+   		}
+	}
+}

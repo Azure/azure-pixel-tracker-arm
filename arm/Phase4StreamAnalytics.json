@@ -1,0 +1,163 @@
+   {
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "parameters": {
+        "userId": {
+            "type": "string",
+            "metadata": {
+                "description": "User ID for Data Lake Store"
+            }
+        },
+        "userDisplayName": {
+            "type": "string",
+            "metadata": {
+                "description": "User display name for Data Lake Store"
+            }
+        },
+		"serviceBusNamespace" :{
+            "type": "string",
+            "metadata": {
+                "description": "Service bus namespace"
+            }
+        },
+		"eventHubName" :{
+            "type": "string",
+            "metadata": {
+                "description": "Event hub name"
+            }
+        },
+		"consumerGroupName1" :{
+            "type": "string",
+            "metadata": {
+                "description": "EH Consumer Group"
+            }
+        },		
+		"sharedAccessPolicyKeyName": {
+            "type": "string",
+            "metadata": {
+                "description": "Shared Access Policy Key Name"
+            }
+        },
+		"sharedAccessPolicyKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Shared Access Policy Key"
+            }
+        },
+		"datalakeAccount": {
+            "type": "string",
+            "metadata": {
+                "description": "The Data Lake account name or ID. This can also be fully qualified domain name endpoint for the account."
+            }
+        },
+		
+		"streamingJobName1": {
+            "type": "string",
+            "metadata": {
+                "description": "Raw data stream for Data Lake"
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]",
+		
+        "saVersion": "2015-06-01",
+
+        "startTime": "2015-05-01T00:00:00Z",
+		
+		"invalidTenantId": "00000000-0000-0000-0000-000000000000",
+
+        "InputHubCg1": "pixeladlcg",
+
+        "adlsOutputName1" : "clickstreamdl",
+		"adlsFilePrefix1" : "pixeltracker/clickstream/{date}",
+
+		"streamRawDataQuery" : "SELECT *\r\nINTO clickstreamdl\r\nFROM pixeladlcg"
+
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('saVersion')]",
+            "type": "Microsoft.StreamAnalytics/streamingJobs",
+            "name": "[parameters('streamingJobName1')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "sku": {
+                    "name": "standard"
+                },
+                "EventsOutOfOrderMaxDelayInSeconds": 10,
+                "EventsOutOfOrderPolicy": "Adjust",
+                "OutputStartMode": "CustomTime",
+                "OutputStartTime": "[variables('startTime')]",
+				
+                "Inputs": [
+                    {
+                        "name": "[variables('InputHubCg1')]",
+                        "properties": {
+                            "type": "stream",
+                            "Serialization": {
+                                "Properties": {
+                                    "Encoding": "UTF8"
+                                },
+                                "Type": "Json"
+                            },
+                            "datasource": {
+                                "type": "Microsoft.ServiceBus/EventHub",
+                                "properties": {
+                                    "EventHubName": "[parameters('eventHubName')]",
+                                    "ServiceBusNamespace": "[parameters('serviceBusNamespace')]",
+                                    "SharedAccessPolicyName": "[parameters('sharedAccessPolicyKeyName')]",
+                                    "SharedAccessPolicyKey": "[parameters('sharedAccessPolicyKey')]",
+                                    "SourcePartitionCount": 16,
+                                    "ConsumerGroupName": "[parameters('consumerGroupName3')]"
+                                }
+                            }
+                        }
+                    }
+                ],
+				"Outputs": [
+                    {
+						"name":"[variables('adlsOutputName1')]",
+						"properties":{  
+							"Serialization": {
+								"Properties": {
+									"Encoding": "UTF8"
+								},
+								"Type": "Json"
+							},
+							"datasource":{  
+								"type":"Microsoft.DataLake/Accounts",
+								"properties":{  
+									"accountName":"[parameters('datalakeAccount')]",
+									"tenantId" : "[variables('invalidTenantId')]",
+									"tokenUserPrincipalName": "[parameters('userId')]",
+									"tokenUserDisplayName": "[parameters('userDisplayName')]",
+									"refreshToken" : "[variables('invalidTenantId')]",
+									"filePathPrefix":"[variables('adlsFilePrefix1')]"
+								}
+							}
+						}                    
+					}								
+                ],
+                "transformation": {
+                    "name": "RawDataQuery",
+                    "properties": {
+                        "streamingUnits": 1,
+                        "query": "[variables('streamRawDataQuery')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+		"streamingJobName1": {
+   			"type": "string",
+   			"value": "[parameters('streamingJobName1')]"
+   		},
+   		"streamJobDeepLinkUrl1": {
+   			"type": "string",
+   			"value": "[concat('https://ms.portal.azure.com/#resource/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.StreamAnalytics/streamingjobs/', parameters('streamingJobName1'))]"
+   		}
+
+    }
+}

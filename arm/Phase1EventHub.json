@@ -1,0 +1,83 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	 "parameters": {
+        "eventHubName": {
+            "type": "string",
+            "metadata": {
+                "description": "Event Hub Name"
+            }
+        }
+	},
+    "variables": {
+        "namePrefix": "[resourceGroup().name]",
+        "uniqueNamePrefix": "[concat(variables('namePrefix'), uniqueString(subscription().subscriptionId))]",
+        "location": "[resourceGroup().location]",
+
+        "sbVersion": "2014-09-01",
+        "namespaceName": "[concat(variables('uniqueNamePrefix'),'ns')]",
+        "firstConsumerGroupName": "pixeladlcg",
+        "sbKeyName": "RootManageSharedAccessKey",
+        "sbKeyResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('namespaceName'), variables('sbKeyName'))]",
+        "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces', variables('namespaceName'))]"
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('sbVersion')]",
+            "name": "[variables('namespaceName')]",
+            "type": "Microsoft.EventHub/namespaces",
+            "location": "[variables('location')]",
+            "properties": {
+				"sku":{  
+					"name":"Standard",
+					"tier":"Standard",
+					"capacity": 20
+				}
+            },
+            "resources": [
+                {
+                    "apiVersion": "[variables('sbVersion')]",
+                    "name": "[parameters('eventHubName')]",
+                    "type": "eventHubs",
+                    "location": "[variables('location')]",
+                    "dependsOn": [
+                        "[variables('sbResourceId')]"
+                    ],
+                    "properties": {
+                        "path": "[parameters('eventHubName')]",
+						"partitionCount" : 16,
+                        "messageRetentionInDays" : 1
+                    },
+                    "resources": [
+                        {
+                            "apiVersion": "[variables('sbVersion')]",
+                            "type": "ConsumerGroups",
+                            "name": "[variables('firstConsumerGroupName')]",
+                            "dependsOn": [
+                                "[parameters('eventHubName')]"
+                            ],
+                            "properties": {
+                                "enableCheckpoint": "false"
+                            }
+                        }
+                    ],
+                    "metadata": {
+                        "description": "Create the Ingest Event Hub"
+                    }
+                }
+            ]
+		}
+    ],
+    "outputs": {
+		"serviceBusNamespace" : { "type" : "string", "value": "[variables('namespaceName')]" },
+		"eventHubName": { "type": "string", "value": "[parameters('eventHubName')]" },
+        "eventHubConnectionString": { "type": "string", "value": "[listkeys(variables('sbKeyResourceId'), variables('sbVersion')).primaryConnectionString]" },
+		"eventHubSharedAccessPolicyKeyName" : { "type" : "string", "value": "[variables('sbKeyName')]" },
+        "eventHubSharedAccessPolicyKey": { "type": "string", "value": "[listKeys(variables('sbKeyResourceId'), variables('sbVersion')).primaryKey]" },
+		"eventHubGroup1": { "type": "string", "value": "[variables('firstConsumerGroupName')]" },
+   		"eventHubDeepLinkUrl": {
+   			"type": "string",
+   			"value": "[concat('https://ms.portal.azure.com/#resource/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.EventHub/namespaces/', variables('namespaceName'), '/eventhubs/', parameters('eventHubName') ,'/overview')]"
+   		}
+    }
+}
