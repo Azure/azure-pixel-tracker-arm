@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "eventHubName": {
+            "type": "string",
+            "metadata": {
+                "description": "Event Hub Name"
+            }
+        }
+  },
+  "variables": {
+    "phaseCount": 2,
+    "phases":[
+    {
+      "phaseName": "EventHubPhase",
+      "phaseTemplateName": "Phase1EventHub.json",
+      "phaseParameteres": {
+        "eventHubName":"[variables('eventHubName')]"
+      },
+      "phaseDependsOn": [
+        "[parameters('eventHubName')]"
+      ]
+    },
+    {
+      "phaseName": "WebAppPhase",
+      "phaseTemplateName": "Phase2WebApp.json",
+      "phaseParameteres": {
+        "eventHubConnectionString":"[reference('EventHub').output.eventHubConnectionString.value]"
+        },
+      "phaseDependsOn": [
+        "EventHubPhase",
+        "[concat('Microsoft.EventHub/namespaces', variables('eventHubName'))]"
+      ]
+      }
+    ]
+  },
+  "resources": [
+  {
+      "apiVersion": "2017-05-10",
+      "name": "[variables('phases')[copyIndex()]['phaseName']]",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": "[variables('phases')[copyIndex()]['phaseDependsOn']]",
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[concat('./', variables('phases')[copyIndex()]['phaseTemplateName'])]",
+          "contentVersion": "1.0.0.0",
+          "parameters": "[variables('phases')[copyIndex()]['phaseParameteres']]"
+        }
+      },
+      "copy": {
+        "count": "[variables('phaseCount')]"
+      }
+    }
+  ],
+  "outputs": {}
+}
