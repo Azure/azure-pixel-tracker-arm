@@ -1,57 +1,109 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
-    "eventHubName": {
+  "parameters":{
+      "environment": {
+         "type":"string",
+         "defaultValue": "int",
+         "metadata": {
+             "description": "Deployment Enviroment for release"
+         }
+      },  
+      "namespaceName":{  
+         "type":"string",
+         "defaultValue": "pixelTrackerNamespace",
+         "metadata":{  
+            "description":"Name of the EventHub namespace"
+         }
+      },
+      "eventHubName":{  
+         "type":"string",
+         "metadata":{  
+            "description":"Name of the Event Hub"
+         }
+      },
+      "consumerGroupName":{  
+         "type":"string",
+         "metadata":{  
+            "description":"Name of the Consumer Group"
+         }
+      },
+      "hostingPlanName": {
             "type": "string",
+            "minLength": 1,
             "metadata": {
-                "description": "Event Hub Name"
+                "description": "Name of the hosting plan to use in Azure."
+            }
+        },
+        "webSiteName": {
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "Name of the Azure Web app to create."
+            }
+        },
+        "skuName": {
+            "type": "string",
+            "defaultValue": "F1",
+            "allowedValues": [
+                "F1",
+                "D1",
+                "B1",
+                "B2",
+                "B3",
+                "S1",
+                "S2",
+                "S3",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+            ],
+            "metadata": {
+                "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+            }
+        },
+        "skuCapacity": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "metadata": {
+                "description": "Describes plan's instance count"
             }
         }
-  },
-  "variables": {
-    "phaseCount": 2,
-    "phases":[
-    {
-      "phaseName": "EventHubPhase",
-      "phaseTemplateName": "Phase1EventHub.json",
-      "phaseParameteres": {
-        "eventHubName":"[variables('eventHubName')]"
-      },
-      "phaseDependsOn": [
-        "[parameters('eventHubName')]"
-      ]
-    },
-    {
-      "phaseName": "WebAppPhase",
-      "phaseTemplateName": "Phase2WebApp.json",
-      "phaseParameteres": {
-        "eventHubConnectionString":"[reference('EventHub').output.eventHubConnectionString.value]"
-        },
-      "phaseDependsOn": [
-        "EventHubPhase",
-        "[concat('Microsoft.EventHub/namespaces', variables('eventHubName'))]"
-      ]
-      }
-    ]
-  },
+   },
+  "variables": {},
   "resources": [
   {
       "apiVersion": "2017-05-10",
-      "name": "[variables('phases')[copyIndex()]['phaseName']]",
+      "name": "EventHubPhase",
       "type": "Microsoft.Resources/deployments",
-      "dependsOn": "[variables('phases')[copyIndex()]['phaseDependsOn']]",
       "properties": {
         "mode": "incremental",
         "templateLink": {
-          "uri": "[concat('./', variables('phases')[copyIndex()]['phaseTemplateName'])]",
+          "uri": "[uri(deployment().properties.templateLink.uri, 'Phase1EventHub.json')]",
           "contentVersion": "1.0.0.0",
-          "parameters": "[variables('phases')[copyIndex()]['phaseParameteres']]"
+          "parameters": {
+            "eventHubName":"[parameters('eventHubName')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "WebAppPhase",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, 'Phase2WebApp.json')]",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "eventHubConnectionString":"[reference('EventHubPhase').output.eventHubConnectionString.value]"
+          }
         }
       },
-      "copy": {
-        "count": "[variables('phaseCount')]"
-      }
+      "dependsOn": ["Microsoft.Resources/deployments/EventHubPhase"]
     }
   ],
   "outputs": {}
