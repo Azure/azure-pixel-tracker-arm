@@ -103,7 +103,7 @@
 					],
 					"properties": {
 						"ConnString1": {
-							"value": "[variables('eventHubConnectionString')]",
+							"value": "[parameters('eventHubConnectionString')]",
 							"type": "custom"
 						}
 					}
