@@ -1,178 +1,136 @@
-{  
-   "$schema":"http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
-   "contentVersion":"1.0.0.0",
-   "parameters":{
-       "eventHubConnectionString": {
-            "type": "string",
-            "metadata": {
-                "description": "Event Hub Connection String"
-            }
-       },
-       "webAppName": {
-           "type": "string",
-           "metadata": {
-               "description": "Web App Name"
-           }
-       },
-      "environment": {
-         "type":"string",
-         "defaultValue": "int",
-         "metadata": {
-             "description": "Deployment Enviroment for release"
-         }
-      },  
-      "namespaceName":{  
-         "type":"string",
-         "defaultValue": "pixelTrackerNamespace",
-         "metadata":{  
-            "description":"Name of the EventHub namespace"
-         }
-      },
-      "eventHubName":{  
-         "type":"string",
-         "metadata":{  
-            "description":"Name of the Event Hub"
-         }
-      },
-      "consumerGroupName":{  
-         "type":"string",
-         "metadata":{  
-            "description":"Name of the Consumer Group"
-         }
-      },
-      "hostingPlanName": {
-            "type": "string",
-            "minLength": 1,
-            "metadata": {
-                "description": "Name of the hosting plan to use in Azure."
-            }
-        },
-        "webSiteName": {
-            "type": "string",
-            "minLength": 1,
-            "metadata": {
-                "description": "Name of the Azure Web app to create."
-            }
-        },
-        "skuName": {
-            "type": "string",
-            "defaultValue": "F1",
-            "allowedValues": [
-                "F1",
-                "D1",
-                "B1",
-                "B2",
-                "B3",
-                "S1",
-                "S2",
-                "S3",
-                "P1",
-                "P2",
-                "P3",
-                "P4"
-            ],
-            "metadata": {
-                "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
-            }
-        },
-        "skuCapacity": {
-            "type": "int",
-            "defaultValue": 1,
-            "minValue": 1,
-            "metadata": {
-                "description": "Describes plan's instance count"
-            }
-        }
-   },
-   "variables":{
-      "ehNamespaceName": "[concat(parameters('environment'), parameters('namespaceName'))]",
-      "ehName": "[concat(parameters('environment'),parameters('eventHubName'))]",
-      "hpName": "[concat(parameters('environment'),parameters('hostingPlanName'))]",
-      "wsName": "[concat(parameters('environment'),parameters('webSiteName'))]",
-      "defaultSASKeyName":"RootManageSharedAccessKey",
-      "authRuleResourceId":"[resourceId('Microsoft.EventHub/namespaces/authorizationRules', variables('ehNamespaceName'), variables('defaultSASKeyName'))]",
-	  "ehVersion":"2017-04-01"      
-   },
-   "resources":[  
-      {
-            "apiVersion": "2015-08-01",
-            "name": "[variables('hpName')]",
-            "type": "Microsoft.Web/serverfarms",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "displayName": "HostingPlan"
-            },
-            "sku": {
-                "name": "[parameters('skuName')]",
-                "capacity": "[parameters('skuCapacity')]"
-            },
-            "properties": {
-                "name": "[variables('hpName')]"
-            }
-        },
-        {
-            "apiVersion": "2015-08-01",
-            "name": "[variables('wsName')]",
-            "type": "Microsoft.Web/sites",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/',variables('hpName'))]": "Resource",
-                "displayName": "Website"
-            },
-            "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', variables('hpName'))]"
-            ],
-            "properties": {
-                "name": "[variables('wsName')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('hpName'))]",
-    			"siteConfig": {
-                    "appSettings": [{
-                        "Name": "EventHubNamespaceConnectionString",
-                        "value":"[variables('eventHubConnectionString')]"
-                    }]
-                }                
-            },
-            "resources": [
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "web",
-                    "type": "config",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/sites/', variables('wsName'))]"
-                    ],
-                    "properties": {
-                        "javaVersion": "1.8",
-                        "javaContainer": "TOMCAT",
-                        "javaContainerVersion": "8.0"
-                    }
-                },
-                {
-                    "apiVersion": "2014-11-01",
-                    "name": "connectionstrings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites',variables('wsName'))]",
-                        "[variables('ehName')]"
-                    ],
-                    "properties": {
-                        "ConnString1": { "value":"[variables('eventHubConnectionString')]", "type": "custom" }
-                    }
-                }
-            ]
-        }
-   ],
-   "outputs":{  
-        "webAppDeepLinkUrl": {
-   			"type": "string",
-   			"value": "[concat('https://ms.portal.azure.com/#resource/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/sites/', parameters('webAppName') ,'/appServices')]"
-   		},
-        "webAppUrl": {
-            "type": "string",
-            "value": "[concat(parameters('webAppName'),'.azurewebsites.net')]"
-        },
-        "webAppManagementLinkUrl": {
-            "type": "string",
-            "value": "[concat(parameters('webAppName'),'.scm.azurewebsites.net')]"
-        }
-   }
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"eventHubConnectionString": {
+			"type": "string",
+			"metadata": {
+				"description": "Event Hub Connection String"
+			}
+		}
+		"skuName": {
+			"type": "string",
+			"defaultValue": "F1",
+			"allowedValues": [
+				"F1",
+				"D1",
+				"B1",
+				"B2",
+				"B3",
+				"S1",
+				"S2",
+				"S3",
+				"P1",
+				"P2",
+				"P3",
+				"P4"
+			],
+			"metadata": {
+				"description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+			}
+		},
+		"skuCapacity": {
+			"type": "int",
+			"defaultValue": 1,
+			"minValue": 1,
+			"metadata": {
+				"description": "Describes plan's instance count"
+			}
+		}
+	},
+	"variables": {
+		"namePrefix": "[resourceGroup().name]",
+		"uniqueNamePrefix": "[concat(variables('namePrefix'), uniqueString(subscription().subscriptionId))]",
+		"location": "[resourceGroup().location]",
+		"webAppName": "[concat(variables('uniqueNamePrefix'), 'webapp')]",
+		"ehNamespaceName": "[concat(variables('uniqueNamePrefix'), 'ns')]",
+		"ehName": "[concat(variables('uniqueNamePrefix'),'eh')]",
+		"hpName": "[concat(variables('uniqueNamePrefix'),'hp')]",
+		"wsName": "[concat(variables('uniqueNamePrefix'),'ws')]",
+		"defaultSASKeyName": "RootManageSharedAccessKey",
+		"authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', variables('ehNamespaceName'), variables('defaultSASKeyName'))]",
+		"ehVersion": "2017-04-01"
+	},
+	"resources": [{
+			"apiVersion": "2015-08-01",
+			"name": "[variables('hpName')]",
+			"type": "Microsoft.Web/serverfarms",
+			"location": "[resourceGroup().location]",
+			"tags": {
+				"displayName": "HostingPlan"
+			},
+			"sku": {
+				"name": "[parameters('skuName')]",
+				"capacity": "[parameters('skuCapacity')]"
+			},
+			"properties": {
+				"name": "[variables('hpName')]"
+			}
+		}, {
+			"apiVersion": "2015-08-01",
+			"name": "[variables('wsName')]",
+			"type": "Microsoft.Web/sites",
+			"location": "[resourceGroup().location]",
+			"tags": {
+				"[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/',variables('hpName'))]": "Resource",
+				"displayName": "Website"
+			},
+			"dependsOn": [
+				"[concat('Microsoft.Web/serverfarms/', variables('hpName'))]"
+			],
+			"properties": {
+				"name": "[variables('wsName')]",
+				"serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('hpName'))]",
+				"siteConfig": {
+					"appSettings": [{
+							"Name": "EventHubNamespaceConnectionString",
+							"value": "[variables('eventHubConnectionString')]"
+						}
+					]
+				}
+			},
+			"resources": [{
+					"apiVersion": "2015-08-01",
+					"name": "web",
+					"type": "config",
+					"dependsOn": [
+						"[concat('Microsoft.Web/sites/', variables('wsName'))]"
+					],
+					"properties": {
+						"javaVersion": "1.8",
+						"javaContainer": "TOMCAT",
+						"javaContainerVersion": "8.0"
+					}
+				}, {
+					"apiVersion": "2014-11-01",
+					"name": "connectionstrings",
+					"type": "config",
+					"dependsOn": [
+						"[resourceId('Microsoft.Web/Sites',variables('wsName'))]",
+						"[variables('ehName')]"
+					],
+					"properties": {
+						"ConnString1": {
+							"value": "[variables('eventHubConnectionString')]",
+							"type": "custom"
+						}
+					}
+				}
+			]
+		}
+	],
+	"outputs": {
+		"webAppDeepLinkUrl": {
+			"type": "string",
+			"value": "[concat('https://ms.portal.azure.com/#resource/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/sites/', variables('webAppName') ,'/appServices')]"
+		},
+		"webAppUrl": {
+			"type": "string",
+			"value": "[concat(variables('webAppName'),'.azurewebsites.net')]"
+		},
+		"webAppManagementLinkUrl": {
+			"type": "string",
+			"value": "[concat(variables('webAppName'),'.scm.azurewebsites.net')]"
+		}
+	}
 }
