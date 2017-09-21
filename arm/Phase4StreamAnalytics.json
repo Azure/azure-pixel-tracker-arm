@@ -50,7 +50,7 @@
                 "description": "The Data Lake account name or ID. This can also be fully qualified domain name endpoint for the account."
             }
         },
-		
+
 		"streamingJobName1": {
             "type": "string",
             "metadata": {
@@ -71,7 +71,6 @@
 
         "adlsOutputName1" : "clickstreamdl",
 		"adlsFilePrefix1" : "pixeltracker/clickstream/{date}",
-
 		"streamRawDataQuery" : "SELECT *\r\nINTO clickstreamdl\r\nFROM pixeladlcg"
 
     },
@@ -109,7 +108,7 @@
                                     "SharedAccessPolicyName": "[parameters('sharedAccessPolicyKeyName')]",
                                     "SharedAccessPolicyKey": "[parameters('sharedAccessPolicyKey')]",
                                     "SourcePartitionCount": 16,
-                                    "ConsumerGroupName": "[parameters('consumerGroupName3')]"
+                                    "ConsumerGroupName": "[parameters('consumerGroupName1')]"
                                 }
                             }
                         }
