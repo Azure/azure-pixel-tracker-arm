@@ -99,8 +99,7 @@
 					"name": "connectionstrings",
 					"type": "config",
 					"dependsOn": [
-						"[resourceId('Microsoft.Web/Sites',variables('wsName'))]",
-						"[variables('ehName')]"
+						"[resourceId('Microsoft.Web/Sites',variables('wsName'))]"
 					],
 					"properties": {
 						"ConnString1": {
