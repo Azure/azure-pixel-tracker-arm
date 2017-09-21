@@ -7,7 +7,7 @@
 			"metadata": {
 				"description": "Event Hub Connection String"
 			}
-		}
+		},
 		"skuName": {
 			"type": "string",
 			"defaultValue": "F1",
@@ -80,14 +80,7 @@
 			],
 			"properties": {
 				"name": "[variables('wsName')]",
-				"serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('hpName'))]",
-				"siteConfig": {
-					"appSettings": [{
-							"Name": "EventHubNamespaceConnectionString",
-							"value": "[variables('eventHubConnectionString')]"
-						}
-					]
-				}
+				"serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('hpName'))]"
 			},
 			"resources": [{
 					"apiVersion": "2015-08-01",
